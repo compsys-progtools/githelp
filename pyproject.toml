@@ -13,6 +13,6 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = ["click>=8.1"]
 
-# This creates the 'githelp' command
+#this creates the 'githelp' command
 [project.scripts]
 githelp = "githelp.cli:main"

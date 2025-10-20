@@ -15,5 +15,5 @@ from .greeter import make_greeting
 @click.option("--shout/--no-shout", default=False, show_default=False, help="End with an exclamation mark.")
 #click auto parse the value
 def main(name: str, shout: bool) -> None:
-     # Call the inner function to build the message, then print it to stdout
+     #call the inner function to build the message, then print it to stdout
     click.echo(make_greeting(name, shout))
