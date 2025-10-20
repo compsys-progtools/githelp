@@ -1,0 +1,18 @@
+#how the project is built
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+#project's metadata
+[project]
+name = "githelp"
+version = "0.1.0"
+description = "example CLI using Click."
+authors = [{ name = "Jimmy Zhang", email = "jimmy_zhang@uri.edu" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["click>=8.1"]
+
+# This creates the 'githelp' command
+[project.scripts]
+githelp = "githelp.cli:main"
