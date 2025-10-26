@@ -1,19 +1,30 @@
-#import the click library for the building cli interfaces
 import click
-#import the inner function that actually builds the greeting text
-#keynote ".greater" is a relative import not an absolute.
-from .greeter import make_greeting
+from .overlays import load_overlay, render_overlay, render_menu
 
-#declare the click command
-#the text in help show up in the githelp --help
-@click.command(help="Say hello from githelp.")
-#option "--name is define" and "-n" for short 
-#default= World if user didnt provide a name
-#show default flag is set to false so it doesnt display in option
-@click.option("--name", "-n", default="World", show_default=False, help="Who to greet.")
-#here there is a boolean flag pair --shout/--no-shout"
-@click.option("--shout/--no-shout", default=False, show_default=False, help="End with an exclamation mark.")
-#click auto parse the value
-def main(name: str, shout: bool) -> None:
-     #call the inner function to build the message, then print it to stdout
-    click.echo(make_greeting(name, shout))
+@click.group(
+    help="githelp — terminal-first Git helper.",
+    invoke_without_command=True,
+    add_help_option=False,
+)
+@click.option("-h", "--help", "show_help", is_flag=True, help="Provides option menu")
+@click.pass_context
+def main(context, show_help):
+    if show_help or context.invoked_subcommand is None:
+        click.echo(context.get_help())
+        click.echo()
+        click.echo(render_menu())
+        if context.invoked_subcommand is None:
+            context.exit(0)
+
+@main.command(name="list", help="List of available githelp tip pages.")
+def list_cmd():
+    click.echo(render_menu())
+
+@main.command(name="run", help="Show githelp overlay tips for a git subcommand.")
+@click.argument("cmd")
+def run_cmd(cmd):
+    tips = load_overlay(cmd)
+    if tips:
+        click.echo(render_overlay(tips))
+    else:
+        click.echo(f"githelp tips\n\nNo tips found for '{cmd}'.")

@@ -1,0 +1,6 @@
+command: pull
+summary: "A git command that used to fetch and download from a remote Repo and immediately update the local Repo. It is basically a combination of two commands git fetch and git merge."
+when_to_use:
+  - "You want to use to get the latest update on your local repo."
+examples:
+  - { cmd: "git pull", say: "Fetches from your branch’s tracked remote (usually 'origin') and merges into your current branch." }

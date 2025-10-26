@@ -11,8 +11,17 @@ description = "example CLI using Click."
 authors = [{ name = "Jimmy Zhang", email = "jimmy_zhang@uri.edu" }]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["click>=8.1"]
+dependencies = ["click>=8.1", "pyyaml>=6.0"]
 
-#this creates the 'githelp' command
+#this creates the 'githelp' command that point to the click group
 [project.scripts]
 githelp = "githelp.cli:main"
+
+#tell the setuptool to include non py file
+[tool.setuptools]
+include-package-data = true
+
+#include the yml file inside the install so that it can be found in the runtime
+[tool.setuptools.package-data]
+githelp = ["data/overlays/*.yml"]
+
