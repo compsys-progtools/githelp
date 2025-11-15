@@ -15,4 +15,4 @@ dependencies = ["click>=8.1"]
 
 #this creates the 'githelp' command
 [project.scripts]
-githelp = "githelp.cli:main"
+githelp = "githelp.cli:githelp_cli"
