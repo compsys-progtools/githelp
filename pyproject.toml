@@ -1,0 +1,27 @@
+#how the project is built
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+#project's metadata
+[project]
+name = "githelp"
+version = "0.1.0"
+description = "example CLI using Click."
+authors = [{ name = "Jimmy Zhang", email = "jimmy_zhang@uri.edu" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["click>=8.1", "pyyaml>=6.0"]
+
+#this creates the 'githelp' command that point to the click group
+[project.scripts]
+githelp = "githelp.cli:githelp_cli"
+
+#tell the setuptool to include non py file
+[tool.setuptools]
+include-package-data = true
+
+#include the yml file inside the install so that it can be found in the runtime
+[tool.setuptools.package-data]
+githelp = ["data/overlays/*.yml"]
+

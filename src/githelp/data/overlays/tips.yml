@@ -1,0 +1,135 @@
+pull:
+  command: pull
+  summary: "A git command that fetches from a remote repository and merges into the current branch (fetch + merge)."
+  when_to_use:
+    - "You want to get the latest updates into your local branch."
+  examples:
+    - cmd: "git pull"
+      say: "Fetches from your branch's tracked remote (usually 'origin') and merges into your current branch."
+
+commit:
+  command: commit
+  summary: "Create a snapshot of staged changes; keep messages short and imperative."
+  when_to_use:
+    - "You have staged changes and want to record them."
+  examples:
+    - cmd: "git commit -m \"messages\""
+      say: "Short, informative summary."
+
+add: 
+  command: add
+  summary: "Stages changes like new, modified, or deleted files to be included in the next commit. This also moves files from working directory to the staging area."
+  when_to_use: 
+    - "When you want to stage changes this could include new, modified, or deleted files to the repo."
+  examples:
+    - cmd: "git add ."
+      say: "add all file"
+    - cmd: "git add <name of the changed file>"
+      say: "add a file"
+
+status:
+  command: status
+  summary: "command provides an overview of the current state of your Git repository. this is done by checking pointer and compare them to the current directory"
+  when_to_use: 
+    - "when you want to check the differences/changes of current vs before"
+  examples:
+    - cmd: "git status"
+      say: "overview changes"
+
+clone: 
+  command: clone 
+  summary: "Creates a copy of a remote repository on your local machine."
+  when_to_use: 
+    - "you want to use this to create a local copy of an existing Git repository"
+  examples:
+    - cmd: "git clone <github repository link>"
+    - say: "Downloads the remote repo into a new local folder."
+
+checkout: 
+  command: checkout 
+  summary: "switch between branch"
+  when_to_use: 
+    - "you want to use this to navigate between difference branches"
+  examples:
+    - cmd: "git checkout <branch name>"
+      say: "Switches your working directory to the specified branch."
+
+branch: 
+  command: branch
+  summary: "Lists all branches in your repository"
+  when_to_use: 
+    - "you use this to check what branch you're on"
+  examples:
+    - cmd: "git branch"
+      say: "Shows all local branches and highlights the one you're on."
+    - cmd: "git branch -m <new-branch-name>"
+      say: "Renames the current branch to the new name."
+
+logs:
+  command: logs
+  summary: "Displays the commit history of the repository. "
+  when_to_use:
+    - "you want to use this to see commit hashes, authors, dates, and messages."
+  examples:
+    - cmd: git logs
+      say: "information of commit history"
+
+tag: 
+  command: tag
+  summary: "command in Git is used to mark specific points in a repository's history as important."
+  when_to_use: 
+    - "use this to mark a particular point in the commit ancestry chain."
+  examples:
+    - cmd: git tag
+      say: "Lists all tags that mark important commits in the repo."
+
+rebase:
+  command: rebase
+  summary: "Moves or reapplies commits from one branch on top of another to keep history linear."
+  when_to_use:
+    - "You want to update your feature branch on top of the latest main or another branch."
+    - "You want a cleaner, straight line commit history instead of a lot of merge commits."
+  examples:
+    - cmd: "git rebase main"
+      say: "Replay your current branch’s commits on top of the latest 'main' branch."
+    - cmd: "git rebase origin/main"
+      say: "Rebase your work on top of the 'origin/main' branch from the remote."
+
+fetch:
+  command: fetch
+  summary: "Downloads new commits, branches, and tags from the remote without changing local branches or files."
+  when_to_use:
+    - "You want to see what changed on the remote before merging or rebasing."
+    - "You want to update remote-tracking branches like origin/main without touching your current branch."
+  examples:
+    - cmd: "git fetch"
+      say: "Gets all new data from the default remote (usually 'origin') without modifying your current branch."
+    - cmd: "git fetch origin main"
+      say: "Fetches only updates for the 'main' branch from 'origin'."
+
+push:
+  command: push
+  summary: "Sends your local commits to a remote repository branch."
+  when_to_use:
+    - "You want to upload your local commits so they appear on GitHub or another remote."
+    - "You want to share your changes with others or back them up remotely."
+  examples:
+    - cmd: "git push"
+      say: "Pushes your current branch to its tracked remote branch."
+    - cmd: "git push origin <branch-name>"
+      say: "Pushes the specified local branch to the 'origin' remote."
+
+merge:
+  command: merge
+  summary: "Combines another branch into the current branch by creating a merge commit."
+  when_to_use:
+    - "You want to bring changes from one branch into another and keep full history from both."
+    - "You want to integrate a completed feature branch into main (or another base branch)."
+  examples:
+    - cmd: "git merge <branch-name>"
+      say: "Merges the named branch into your current branch, creating a merge commit."
+    - cmd: "git merge main"
+      say: "Brings the latest changes from 'main' into your current branch."
+
+
+
