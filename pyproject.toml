@@ -15,7 +15,7 @@ dependencies = ["click>=8.1", "pyyaml>=6.0"]
 
 #this creates the 'githelp' command that point to the click group
 [project.scripts]
-githelp = "githelp.cli:main"
+githelp = "githelp.cli:githelp_cli"
 
 #tell the setuptool to include non py file
 [tool.setuptools]
