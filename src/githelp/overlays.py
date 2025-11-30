@@ -8,13 +8,13 @@ DATA_DIR = os.path.join(THIS_DIR, "data", "overlays")
 MASTER_FILE = os.path.join(DATA_DIR, "tips.yml")
 
 
-def read_yaml(path: str):
+def read_yaml(path):
     '''
     Read a YAML file into a Python object.
 
     Parameters
     ----------
-    path : str
+    path
         Path to the YAML file to read.
 
     Returns
@@ -40,19 +40,18 @@ def helper():
     data = read_yaml(MASTER_FILE)
     return data
 
-def load_overlay(command: str):
+def load_overlay(command):
     '''
     Get the tips for one git subcommand.
 
     This first looks in the master file tips.yml under the given
-    command name (ex "pull"). If found, it returns the corresponding
+    command name (ex pull). If found, it returns the corresponding
     dictionary of tips.
 
     Parameters
     ----------
-    command : str
-        Name of the git subcommand whose overlay should be loaded.
-
+    command
+        Name of the git subcommand
     Returns
     -------
     dict or None
@@ -74,7 +73,7 @@ def load_overlay(command: str):
             return section
 
 
-def list_overlay_names():
+def list_tips_names():
     '''
     List available subcommand names from tips.yml.
 
@@ -95,15 +94,15 @@ def list_overlay_names():
 
     names.sort()
     return names
-def render_overlay(d: dict) -> str:
+def render_overlay(dict):
     '''
-    Render a single overlay dictionary into a human-readable text block.
+    Render a single overlay dictionary into a human readable text block.
 
     Parameters
     ----------
-    d : dict
+    dict
         Overlay dictionary containing keys such as ``"summary"``,
-        ``"when_to_use"``, and ``"examples"`` (any of which may be absent).
+        It has ``"when_to_use"``, and ``"examples"``.
 
     Returns
     -------
@@ -116,9 +115,9 @@ def render_overlay(d: dict) -> str:
     lines.append("\ngithelp tips")
 
     #get the summary, when to use, and example in the dictionary
-    summary = d.get("summary")
-    when_to_use = d.get("when_to_use")
-    examples = d.get("examples")
+    summary = dict.get("summary")
+    when_to_use = dict.get("when_to_use")
+    examples = dict.get("examples")
 
     #summary = true then append the summary text to line list
     if summary:
@@ -127,13 +126,13 @@ def render_overlay(d: dict) -> str:
     #when to use = true then append the item in the when to use to line list
     if when_to_use:
         lines.append("\nWhen to use")
-        for item in d["when_to_use"]:
+        for item in dict["when_to_use"]:
             lines.append(f" - {item}")
     #example = true then append new line and example into line
     if examples:
         lines.append("\nExamples")
-        #for each example in d["examples"]
-        for ex in d["examples"]:
+        #for each example in dict["examples"]
+        for ex in dict["examples"]:
             #get the cmd and say
             cmd = ex.get("cmd", "")
             say = ex.get("say", "")
@@ -158,15 +157,16 @@ def render_menu():
     #declare an empty list called lines
     lines = []
     #display commands
-    lines.append("Commands:")
+    lines.append("Githelp Commands:")
     lines.append("  - explain <subcommand>   Show an explaination for a git subcommand")
     lines.append("  - list                   List available tip pages\n")
+    lines.append("  - tips <subcommand>      Show tips.yml page for a git subcommand\n")
 
-    #name variable that stores the list of overlay names
-    names = list_overlay_names()
+    #name variable that stores the list of tips names
+    names = list_tips_names()
     #if name is true then append the available tip pages to line list
     if names:
-        lines.append("Available tip pages:")
+        lines.append("Available tips:")
         #for each name in names
         for n in names:
             #append each name with a dash and space before it for formatting
