@@ -43,7 +43,7 @@ clone:
     - "you want to use this to create a local copy of an existing Git repository"
   examples:
     - cmd: "git clone <github repository link>"
-    - say: "Downloads the remote repo into a new local folder."
+      say: "Downloads the remote repo into a new local folder."
 
 checkout: 
   command: checkout 

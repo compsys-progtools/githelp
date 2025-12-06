@@ -4,8 +4,8 @@ import yaml
 #build absolute path to githelp/data/overlays
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(THIS_DIR, "data", "overlays")
-#master dictionary file: to /src/githelp/data/overlays/tips.yml
-MASTER_FILE = os.path.join(DATA_DIR, "tips.yml")
+#TIPS dictionary file: to /src/githelp/data/overlays/tips.yml
+TIPS_FILE = os.path.join(DATA_DIR, "tips.yml")
 
 
 def read_yaml(path):
@@ -24,7 +24,7 @@ def read_yaml(path):
         or if any error occurs while reading/parsing.
     '''
     try:
-        #r opens the file for reading in text mode, and encoding="utf-8" tells Python to decode the file's bytes 
+        # opens the file for reading in text mode, and encoding="utf-8" tells Python to decode the file's bytes 
         #as UTF-8 text into normal Python strings
         with open(path, "r", encoding="utf-8") as f:
             #convert YAML content to Python object or empty dict if file is empty
@@ -34,18 +34,13 @@ def read_yaml(path):
     except Exception:
         #if error occurs return empty dict
         return {}
-    
-def helper():
-
-    data = read_yaml(MASTER_FILE)
-    return data
 
 def load_overlay(command):
     '''
     Get the tips for one git subcommand.
 
-    This first looks in the master file tips.yml under the given
-    command name (ex pull). If found, it returns the corresponding
+    This first looks in the TIPS file tips.yml under the given
+    command name (ex `pull`). If found, it returns the corresponding
     dictionary of tips.
 
     Parameters
@@ -56,21 +51,21 @@ def load_overlay(command):
     -------
     dict or None
         The overlay dictionary for the given command, with a ``"command"`` key
-        ensured, or ``None`` if no overlay is defined.
+        ensured, or ``None`` if no tip is defined.
     '''
-    #set data to the master dictionary file
-    data = helper()
-    #check to see if the master is a dict and not empty
-    if isinstance(data, dict):
-        #get the section for this specific command and store it in section
-        section = data.get(command)
-        #check if section is a dict
-        if isinstance(section, dict):
-            # make sure the section has a command key
-            # does nothing if "command" already exists
-            section.setdefault("command", command)
-            #return the section
-            return section
+    data = read_yaml(TIPS_FILE)
+
+    # if the YAML didn't load as a dict, bail out early
+    if not isinstance(data, dict):
+        return None
+    # section for this specific command
+    section = data.get(command)
+    # if there's no entry (or it's not a dict), bail out
+    if not isinstance(section, dict):
+        return None
+    # make sure the section has a "command" key
+    section.setdefault("command", command)
+    return section
 
 
 def list_tips_names():
@@ -80,20 +75,14 @@ def list_tips_names():
     Returns
     -------
     list of str
-        Sorted list of subcommand names found in the master tips mapping.
+        Sorted list of subcommand names found in the TIPS tips mapping.
     '''
-    names = []
-    data = helper()
-    #check if data is a dict and not empty
+    data = read_yaml(TIPS_FILE)
     if not isinstance(data, dict):
-        return names
+        return []
 
-    for key, value in data.items():
-        if isinstance(value, dict):
-            names.append(key)
-
-    names.sort()
-    return names
+    # just return all the keys, sorted
+    return sorted(data.keys())
 def render_overlay(dict):
     '''
     Render a single overlay dictionary into a human readable text block.
@@ -107,7 +96,7 @@ def render_overlay(dict):
     Returns
     -------
     str
-        A formatted multi-line string 
+        Using fstring to format the text block for display.
     '''
     #line variable that stores a list of outputs
     lines = []
@@ -152,15 +141,15 @@ def render_menu():
     Returns
     -------
     str
-        A formatted multi-line string describing available commands.
+        Using fstring to format the text block for display.
     '''
     #declare an empty list called lines
     lines = []
     #display commands
     lines.append("Githelp Commands:")
     lines.append("  - explain <subcommand>   Show an explaination for a git subcommand")
-    lines.append("  - list                   List available tip pages\n")
-    lines.append("  - tips <subcommand>      Show tips.yml page for a git subcommand\n")
+    lines.append("  - list                   List available tip pages")
+    lines.append("  - tips <subcommand>      Show tips.yml page for a git subcommand")
 
     #name variable that stores the list of tips names
     names = list_tips_names()

@@ -17,8 +17,8 @@ def githelp_cli(context, show_help):
         if context.invoked_subcommand is None:
             context.exit(0)
 
-@githelp_cli.command(name = "list", help = "List of available githelp tip pages.")
-def list_cmd():
+@githelp_cli.command(help = "List of available githelp tip pages.")
+def list():
     '''List all available githelp tip.'''
     click.echo(render_menu())
 
