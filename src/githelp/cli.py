@@ -197,6 +197,7 @@ def save_cmd(message):
     #step 1 -> git add .
     click.echo()
     click.echo("git add .")
+    run_git_command(["add", "."])
     ai_explain_step("add")
     click.echo()
     #step 2 -> git commit -m "<message>"
@@ -204,6 +205,9 @@ def save_cmd(message):
         message = click.prompt("Commit message", default="save changes")
 
     click.echo(f'git commit -m "{message}"')
+    if not run_git_command(["commit", "-m", message]):
+        click.echo("githelp save: stopping because 'git commit' returned an error.")
+        return
     ai_explain_step("commit")
     click.echo()
     #step 3 -> git push 
@@ -215,3 +219,5 @@ def save_cmd(message):
     ai_explain_step("push")
     click.echo()
     click.echo("githelp save: finished.")
+
+    #testing purposes to see if  githelp save works successfully
