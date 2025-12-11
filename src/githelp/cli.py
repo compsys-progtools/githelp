@@ -1,4 +1,5 @@
 import click
+import subprocess
 from .overlays import load_overlay, render_overlay, render_menu
 from .ollama import ask_ollama
 
@@ -40,22 +41,11 @@ def explain_cmd(cmd):
         click.echo(f"githelp tips\n\nNo tips found for '{cmd}'.")
         return
 
-    # Base explanation text from tips.yml
+    #base explanation text from tips.yml
     rendered = render_overlay(tips)
 
-    # Try to use ollama first
+    #try to use ollama first
     explanation = ask_ollama(rendered)
-
-    # If ollama isn't available or errors then show tips.yml
-    if explanation.startswith("githelp: `ollama` command not found.") or \
-       explanation.startswith("githelp: ollama returned an error:"):
-        #show error message to user that way they know why AI explanation is not available
-        click.echo(explanation)
-        click.echo()
-        # Just show the tips.yml explanation
-        click.echo(rendered)
-        return
-
     #otherwise, show ONLY the AI explanation
     click.echo(explanation)
 
@@ -78,3 +68,150 @@ def tips_cmd(cmd):
         click.echo(render_overlay(tips))
     else:
         click.echo(f"githelp tips\n\nNo tips found for '{cmd}'.")
+
+def run_git_command(args):
+    """Run a git command and print its output.
+
+    Parameters
+    ----------
+    args
+        List of arguments after ``git``, for example ``["status"]`` or
+        ``["add", "."]``.
+
+    Returns
+    -------
+    bool
+        True if the command succeeded (exit code 0), False otherwise.
+    """
+    try:
+        completed = subprocess.run(
+            ["git"] + args,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=True,
+        )
+        if completed.stdout:
+            click.echo(completed.stdout)
+        return True
+    except subprocess.CalledProcessError as exc:
+        output = exc.stdout or exc.stderr or str(exc)
+        text = output or ""
+
+        #special case - handle no upstream branch error for git push
+        if args == ["push"] and "has no upstream branch" in text:
+            click.echo("githelp save - detected missing upstream, setting it up now...")
+
+            #figures out current branch name
+            try:
+                branch_proc = subprocess.run(
+                    ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    check=True,
+                )
+                branch = branch_proc.stdout.strip()
+            except subprocess.CalledProcessError:
+                #show original error and bail
+                click.echo(output)
+                click.echo("githelp save - sorry could not determine current branch name.")
+                return False
+
+            #this runs git push --set-upstream origin <branch>
+            try:
+                fix_proc = subprocess.run(
+                    ["git", "push", "--set-upstream", "origin", branch],
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    check=True,
+                )
+                if fix_proc.stdout:
+                    click.echo(fix_proc.stdout)
+                return True
+            except subprocess.CalledProcessError as exc2:
+                #if fix also fails, show errors
+                out2 = exc2.stdout or exc2.stderr or str(exc2)
+                click.echo(output)
+                click.echo(out2)
+                return False
+
+        #default behavior just show the error
+        click.echo(output)
+        return False
+
+
+def ai_explain_step(subcommand):
+    """Use ollama to briefly explain one git subcommand.
+
+    This uses the short "save" mode prompt so that the response
+    is a very small phrase suitable for inline display after
+    high-level steps.
+    """
+    rendered = render_overlay(load_overlay(subcommand))
+    explanation = ask_ollama(rendered, mode="save")
+    #otherwise show llama2 explanation
+    click.echo(explanation.strip())
+
+@githelp_cli.command(
+    name="save",
+    help="High level save - run git add, commit, and push, then ollama2 explain each step.",
+)
+@click.option(
+    "--message",
+    help='Commit message to use for git commit. If omitted, you will be prompted.',
+)
+def save_cmd(message):
+    """Run git add, commit, and push as one high level "save" step.
+
+    Behind the scenes this does:
+
+    githelp save
+    this will do the follow:
+    - it will auto run ``git add .`` and then AI explain git add
+    - it will auto run ``git commit -m "<message>"`` and then AI explain git commit
+    - it will auto run ``git push`` and then AI explain git push
+    """
+    #confirmation before proceeding
+    click.echo("githelp save will run the following git commands in this repository:")
+    click.echo("  1. git add .")
+    click.echo('  2. git commit -m "<message>"')
+    click.echo("  3. git push")
+    confirm = click.confirm(
+        "Are you sure you want to run these commands now?",
+        default=False,
+    )
+    if not confirm:
+        click.echo("githelp save: cancelled by user.")
+        return
+
+    click.echo("githelp save: running high-level save (add, commit, push).")
+
+    #step 1 -> git add .
+    click.echo()
+    click.echo("git add .")
+    ai_explain_step("add")
+    click.echo()
+    #step 2 -> git commit -m "<message>"
+    if not message:
+        message = click.prompt("Commit message", default="save changes")
+
+    click.echo(f'git commit -m "{message}"')
+    ai_explain_step("commit")
+    click.echo()
+    #step 3 -> git push 
+    click.echo("git push")
+    if not run_git_command(["push"]):
+        click.echo("githelp save: stopping because 'git push' returned an error.")
+        return
+
+    ai_explain_step("push")
+    click.echo()
+    click.echo("githelp save: finished.")

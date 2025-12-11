@@ -1,6 +1,6 @@
 import subprocess
 
-def ask_ollama(git_output):
+def ask_ollama(git_output, mode="explain"):
     """Ask an ollama model to explain captured git output.
 
     Parameters
@@ -17,16 +17,28 @@ def ask_ollama(git_output):
     """
     model = "llama2"
     #prompt tuned for the LLM model
-    prompt = (
-        "you are a git tutor for the CSC 311 course.\n"
-        "explain the following git output to a beginner.\n"
-        "please explain in simple terms and kept it under 100 words\n"
-        "please provide examples on how to use the commands\n"
-        "if they stuggle with git command please provide some more tips and try to be more detailed\n"
-        "if they come across an error please help guide them to fix it\n"
-        "if they did not get it after the first 4 tries please provide them with the answer\n"
-        f"{git_output}\n"
-    )
+    if mode == "save":
+        #short, one phrase summary
+        prompt = (
+            "you are a git tutor for the CSC 311 course.\n"
+            "explain very briefly what this git command does.\n"
+            "respond in ONE short phrase, at most 20 characters.\n"
+            "do NOT include examples, extra tips, or newlines.\n"
+            f"{git_output}\n"
+        )
+    else:
+        #default more detailed explanation for `githelp explain`.
+        prompt = (
+            "you are a git tutor for the CSC 311 course.\n"
+            "explain the following git output to a beginner.\n"
+            "please explain in simple terms and keep it under 100 words.\n"
+            "please provide examples on how to use the commands.\n"
+            "if they struggle with git commands, provide tips and be detailed.\n"
+            "if they come across an error, help guide them to fix it.\n"
+            "if they still do not understand after several tries, show a clear answer.\n"
+            f"{git_output}\n"
+        )
+
 
     try:
         #this here runs the ollama command with the given model
