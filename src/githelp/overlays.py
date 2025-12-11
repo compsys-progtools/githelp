@@ -149,8 +149,8 @@ def render_menu():
     lines.append("Githelp Commands:")
     lines.append("  - explain <subcommand>   Show an explaination for a git subcommand")
     lines.append("  - list                   List available tip pages")
-    lines.append("  - tips <subcommand>      Show tips.yml page for a git subcommand")
     lines.append("  - save                   High-level save: git add, commit, push")
+    lines.append("  - tips <subcommand>      Show tips.yml page for a git subcommand")
 
     #name variable that stores the list of tips names
     names = list_tips_names()

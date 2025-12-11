@@ -2,7 +2,7 @@
 
 ## Welcome to GitHelp
 
-Learn Git faster, directly from your terminal, with friendly tips and optional AI-powered explanations.
+Learn Git faster, directly from your terminal, with friendly tips and optional AI powered explanations.
 
 ---
 ## Description
@@ -27,10 +27,18 @@ Get concise explanations for common Git subcommands such as `add`, `status`, `co
 Ask GitHelp to explain a Git subcommand using the `llama2` model
 - Requires [Ollama](https://ollama.com/download) to be installed
 
+**<u>High Level Save Command</u>**  
+Use `githelp save` to save work flow under this single command
+- Stages your modified files for commit  
+- Prompts you for a clear, meaningful commit message  
+- Runs `git add`, `git commit`, and `git push` for you  
+- If it encounter an error when pushing it will automatically sets an upstream branch
+
+Perfect for learners who want to do the right Git steps without memorizing every individual command.
 ## Installation
 You can install after cloning to work locally or directly from github. 
 
-### By clone
+### By Git Clone
 
 You can clone first
 ```

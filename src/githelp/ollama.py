@@ -1,14 +1,18 @@
 import subprocess
 
 def ask_ollama(git_output, mode="explain"):
-    """Ask an ollama model to explain captured git output.
+    """
+    Ask an ollama model to explain captured git output.
 
     Parameters
     ----------
     git_output
         The stdout text from a git command (ex `git status`).
     model
-        Name of the ollama model or modelfile to use, by default "githelp".
+         Controls what kind of explanation is requested. Use explain
+        (the default) for a longer beginner-friendly explanation, or
+        save for a very short phrase suitable for inline display in
+        the ``githelp save`` command.
 
     Returns
     -------
@@ -16,7 +20,7 @@ def ask_ollama(git_output, mode="explain"):
         Explanation text from ollama, or an error message if something fails.
     """
     model = "llama2"
-    #prompt tuned for the LLM model
+    #prompt tuned for the LLM model when using git save
     if mode == "save":
         #short, one phrase summary
         prompt = (

@@ -2,7 +2,7 @@
 
 ## Welcome to GitHelp
 
-Learn Git faster, directly from your terminal, with friendly tips and optional AI-powered explanations.
+Learn Git faster, directly from your terminal, with friendly tips and optional AI powered explanations.
 
 ---
 ## Description
@@ -45,17 +45,17 @@ To update, pull and install again.
 The main use is as a CLI, for a list of all commands see the 
 [CLI](cli.md) page. 
 
-## structures
+## Structures
 
 1. **CLI using Click library**  
-   - Implements the `githelp` command and subcommands (`list`, `explain`, etc.).
+   - Implements the `githelp` command and subcommands (`list`, `explain`, `save`, and etc...).
    - Handles parsing arguments, options, and routing to the right functions.
    - [Click's library documentation](https://click.palletsprojects.com/en/stable/)
 
 2. **`tips.yml` and the Yaml Library**  
    - A YAML file that stores tip data in a dictionary format for each Git subcommand and can be found inside the data directory.
    - Each entry contains a `summary`, `when_to_use`, and `examples`.
-   - [yaml's library](https://pypi.org/project/PyYAML/)
+   - [yaml's library documentation](https://pypi.org/project/PyYAML/)
 
 3. **Rendering layer**  
    - Functions that take the dictionaries and convert them into readable text for the terminal (Example - `render_overlay`, `render_menu` in overlays.py).
@@ -63,5 +63,6 @@ The main use is as a CLI, for a list of all commands see the
 4. **AI integration**  
    - When parsing the cmd `githelp explain <subcommand>` GitHelp calls a helper function to query the `llama2`.
    - If anything fails (Ollama not installed, model missing, network error), GitHelp falls back to the standard tips(tips.yml).
-   - The model prompt can be change to developer's preference. 
-   - The model can also be change to developer's preference, however the current default is set to `llama2`
+   - The model's prompts can be changed to developer's preference. 
+   - The model's prompts in this are specialized for particular command.
+   - The model can also be changed to developer's preference, however the current default is set to `llama2`
