@@ -1,0 +1,6 @@
+click
+sphinx
+myst-nb
+sphinx-click
+sphinx-design
+pydata_sphinx_theme
